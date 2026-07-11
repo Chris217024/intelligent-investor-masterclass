@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Intelligent Investor — Zero to Knowledgeable</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:    #0C0B09;
+  --paper:  #F4EFE4;
+  --cream:  #EAE4D4;
+  --warm:   #F9F5EC;
+  --gold:   #8B6914;
+  --gold2:  #C4A24A;
+  --rust:   #7D3420;
+  --forest: #233D28;
+  --navy:   #162240;
+  --grey:   #5E5850;
+  --dim:    #9B9288;
+  --border: #CEC5AF;
+  --lite:   #E4DDD0;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+
+body {
+  background: #1A1410;
+  font-family: 'Libre Baskerville', Georgia, serif;
+  color: var(--ink);
+  min-height: 100vh;
+}
+
+/* ─── PROGRESS ─── */
+.prog {
+  position: fixed; top:0; left:0; right:0;
+  height: 2px; background: rgba(255,255,255,.08); z-index:999;
+}
+.prog-fill {
+  height:100%; background: var(--gold2);
+  transition: width .4s ease; width:0;
+}
+
+/* ─── SLIDE STAGE ─── */
+.stage {
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px 20px 90px;
+}
+
+.slide {
+  display: none; width:100%; max-width:940px;
+  animation: fadeUp .45s ease both;
+}
+.slide.on { display: block; }
+
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(18px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* ─── CONTROLS ─── */
+.bar {
+  position:fixed; bottom:0; left:0; right:0;
+  background: rgba(12,11,9,.96);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255,255,255,.07);
+  padding: 12px 24px;
+  display:flex; align-items:center; gap:10px;
+  z-index: 100;
+}
+.btn {
+  font-family:'DM Mono',monospace; font-size:12px;
+  padding: 8px 20px; border-radius:6px; cursor:pointer;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.05);
+  color: rgba(255,255,255,.65);
+  transition: all .2s; white-space: nowrap;
+}
+.btn:hover { background:rgba(255,255,255,.1); color:#fff; }
+.btn.go {
+  background: var(--gold); border-color: var(--gold);
+  color: var(--ink); font-weight:500;
+}
+.btn.go:hover { background: var(--gold2); }
+.ctr {
+  font-family:'DM Mono',monospace; font-size:11px;
+  color: rgba(255,255,255,.3); margin: 0 auto;
+}
+.dots {
+  display:flex; gap:5px; overflow-x:auto;
+  scrollbar-width:none; max-width:480px; flex-wrap:wrap;
+}
+.dots::-webkit-scrollbar{display:none}
+.dot {
+  width:7px; height:7px; border-radius:50%;
+  background: rgba(255,255,255,.12);
+  cursor:pointer; flex-shrink:0;
+  transition: all .2s;
+}
+.dot.on { background:var(--gold2); transform:scale(1.4); }
+.dot.done { background:rgba(196,162,74,.35); }
+
+/* ═══════════════════════════════════
+   SLIDE TYPES
+═══════════════════════════════════ */
+
+/* COVER */
+.cover {
+  background: var(--ink);
+  border-radius: 12px;
+  min-height: calc(100vh - 110px);
+  display: flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  padding: 60px 40px; text-align:center;
+  position:relative; overflow:hidden;
+}
+.cover::before {
+  content:'';
+  position:absolute; inset:0;
+  background: radial-gradient(ellipse at 50% 30%, rgba(139,105,20,.15), transparent 70%);
+  pointer-events:none;
+}
+.cover-rule { width:80px; height:1px; background:var(--gold2); margin:0 auto 28px; }
+.cover-pre {
+  font-family:'DM Mono',monospace; font-size:10px;
+  letter-spacing:.3em; color:var(--gold2);
+  text-transform:uppercase; margin-bottom:20px;
+}
+.cover-h {
+  font-family:'Playfair Display',serif;
+  font-size:clamp(44px,8vw,88px); font-weight:900;
+  color:#fff; line-height:1.0; margin-bottom:12px;
+}
+.cover-h span { color:var(--gold2); }
+.cover-by {
+  font-size:18px; color:var(--dim);
+  font-style:italic; margin-bottom:44px;
+}
+.cover-pills {
+  display:flex; gap:10px; flex-wrap:wrap;
+  justify-content:center; margin-bottom:44px;
+}
+.pill {
+  font-family:'DM Mono',monospace; font-size:11px;
+  padding: 5px 14px; border-radius:20px;
+  border: 1px solid rgba(255,255,255,.1);
+  color: rgba(255,255,255,.5); letter-spacing:.06em;
+}
+.cover-qblock {
+  max-width:500px;
+  border-top: 1px solid rgba(255,255,255,.08);
+  padding-top:28px;
+}
+.cover-qtext {
+  font-size:17px; color:rgba(244,239,228,.55);
+  font-style:italic; line-height:1.7; margin-bottom:10px;
+}
+.cover-qby {
+  font-family:'DM Mono',monospace; font-size:11px;
+  color:var(--gold2); letter-spacing:.1em;
+}
+
+/* LIGHT SLIDE */
+.ls {
+  background: var(--warm);
+  border-radius:12px;
+  padding: 56px 56px;
+  min-height: calc(100vh - 110px);
+  position:relative; overflow:hidden;
+}
+.ls::before {
+  content:'';
+  position:absolute; top:0; left:0; right:0;
+  height:4px;
+  background: linear-gradient(90deg, var(--gold) 0%, var(--gold2) 100%);
+}
+@media(max-width:600px){ .ls{ padding:32px 22px; } }
+
+/* DARK SLIDE */
+.ds {
+  background: var(--ink);
+  border-radius:12px;
+  padding: 56px 56px;
+  min-height: calc(100vh - 110px);
+  position:relative; overflow:hidden;
+}
+.ds::before {
+  content:'';
+  position:absolute; top:0; left:0; right:0;
+  height:4px; background: var(--gold);
+}
+@media(max-width:600px){ .ds{ padding:32px 22px; } }
+
+/* MID SLIDE — cream */
+.ms {
+  background: var(--cream);
+  border-radius:12px;
+  padding: 56px 56px;
+  min-height: calc(100vh - 110px);
+  position:relative; overflow:hidden;
+}
+.ms::before {
+  content:'';
+  position:absolute; top:0; left:0; right:0;
+  height:4px; background: var(--rust);
+}
+@media(max-width:600px){ .ms{ padding:32px 22px; } }
+
+/* ─── TYPOGRAPHY ─── */
+.eyebrow {
+  font-family:'DM Mono',monospace;
+  font-size:10px; letter-spacing:.28em;
+  text-transform:uppercase; margin-bottom:14px;
+}
+.eyebrow.gold { color:var(--gold); }
+.eyebrow.white { color:var(--gold2); }
+.eyebrow.rust { color:var(--rust); }
+
+.headline {
+  font-family:'Playfair Display',serif;
+  font-size:clamp(28px,5vw,52px); font-weight:900;
+  line-height:1.0; margin-bottom:10px;
+}
+.headline.dark { color:var(--ink); }
+.headline.light { color:#fff; }
+.headline em { font-style:normal; }
+.headline.dark em { color:var(--rust); }
+.headline.light em { color:var(--gold2); }
+
+.sub {
+  font-size:17px; font-style:italic;
+  margin-bottom:32px;
+}
+.sub.dark { color:var(--grey); }
+.sub.light { color:rgba(244,239,228,.5); }
+
+.rule { width:50px; height:2px; margin-bottom:28px; }
+.rule.gold { background:var(--gold); }
+.rule.rust { background:var(--rust); }
+.rule.white { background:rgba(255,255,255,.25); }
+
+.body {
+  font-size:15px; line-height:1.8;
+  margin-bottom:14px;
+}
+.body.dark { color:var(--grey); }
+.body.light { color:rgba(244,239,228,.65); }
+
+/* ─── COMPONENTS ─── */
+
+/* Quote */
+.qblock {
+  border-radius:8px;
+  padding: 28px 32px;
+  margin: 18px 0;
+  position:relative;
+}
+.qblock.dark-bg {
+  background: var(--ink);
+}
+.qblock.gold-bg {
+  background: linear-gradient(135deg, var(--gold), #7A5A10);
+}
+.qblock.cream-bg {
+  background: var(--cream);
+  border: 1px solid var(--lite);
+}
+.qblock::before {
+  content:'\201C';
+  font-family:'Playfair Display',serif;
+  font-size:90px; line-height:1;
+  position:absolute; top:-8px; left:18px;
+  opacity:.18;
+}
+.qtext {
+  font-size:17px; font-style:italic;
+  line-height:1.7; padding-left:16px;
+  margin-bottom:12px;
+}
+.qtext.light { color:var(--paper); }
+.qtext.dark { color:var(--ink); }
+.qtext.gold-text { color:var(--ink); }
+.qattr {
+  font-family:'DM Mono',monospace;
+  font-size:10px; letter-spacing:.14em;
+  padding-left:16px; text-transform:uppercase;
+}
+.qattr.gold { color:var(--gold2); }
+.qattr.rust { color:var(--rust); }
+.qattr.ink { color:rgba(12,11,9,.5); }
+
+/* Principle list */
+.prlist { margin-top:8px; }
+.pr {
+  display:flex; gap:18px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--lite);
+  align-items:flex-start;
+}
+.pr:last-child { border-bottom:none; }
+.pr.dark-pr { border-bottom-color: rgba(255,255,255,.07); }
+.pr-n {
+  font-family:'Playfair Display',serif;
+  font-size:30px; font-weight:900;
+  min-width:40px; line-height:1; text-align:right;
+}
+.pr-n.fade { color:var(--lite); }
+.pr-n.gold { color:rgba(139,105,20,.35); }
+.pr-n.white { color:rgba(255,255,255,.1); }
+.pr-body {}
+.pr-t {
+  font-family:'Playfair Display',serif;
+  font-size:16px; font-weight:700;
+  margin-bottom:5px;
+}
+.pr-t.dark { color:var(--ink); }
+.pr-t.light { color:#fff; }
+.pr-d { font-size:13.5px; line-height:1.65; }
+.pr-d.dark { color:var(--grey); }
+.pr-d.light { color:rgba(244,239,228,.6); }
+.pr-eg {
+  font-family:'DM Mono',monospace; font-size:11.5px;
+  padding: 6px 10px; border-radius:4px;
+  margin-top:7px; line-height:1.5;
+}
+.pr-eg.gold-eg { background:rgba(139,105,20,.1); color:var(--gold); }
+.pr-eg.rust-eg { background:rgba(125,52,32,.08); color:var(--rust); }
+.pr-eg.white-eg { background:rgba(255,255,255,.06); color:var(--gold2); }
+
+/* Cards grid */
+.grid2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:18px; }
+.grid3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin-top:18px; }
+@media(max-width:620px){ .grid2,.grid3{ grid-template-columns:1fr; } }
+
+.card {
+  border-radius:8px; padding:20px;
+  border: 1px solid var(--lite);
+  background: var(--warm);
+}
+.card.dark-card {
+  background: rgba(255,255,255,.04);
+  border-color: rgba(255,255,255,.08);
+}
+.card.gold-card {
+  background: rgba(139,105,20,.08);
+  border-color: rgba(139,105,20,.25);
+  border-top: 3px solid var(--gold);
+}
+.card.rust-card {
+  background: rgba(125,52,32,.07);
+  border-color: rgba(125,52,32,.2);
+  border-top: 3px solid var(--rust);
+}
+.card.forest-card {
+  background: rgba(35,61,40,.08);
+  border-color: rgba(35,61,40,.2);
+  border-top: 3px solid var(--forest);
+}
+.card.navy-card {
+  background: rgba(22,34,64,.08);
+  border-color: rgba(22,34,64,.2);
+  border-top: 3px solid var(--navy);
+}
+.card-icon { font-size:26px; margin-bottom:10px; }
+.card-t {
+  font-family:'Playfair Display',serif;
+  font-size:15px; font-weight:700;
+  margin-bottom:6px;
+}
+.card-t.dark { color:var(--ink); }
+.card-t.light { color:#fff; }
+.card-b { font-size:13px; line-height:1.65; }
+.card-b.dark { color:var(--grey); }
+.card-b.light { color:rgba(244,239,228,.6); }
+
+/* Key concept */
+.kc {
+  border-radius:8px; padding:22px 26px; margin:18px 0;
+  background: linear-gradient(135deg, var(--gold), #7A5A10);
+}
+.kc-label {
+  font-family:'DM Mono',monospace; font-size:9px;
+  letter-spacing:.22em; color:rgba(255,255,255,.6);
+  text-transform:uppercase; margin-bottom:8px;
+}
+.kc-text {
+  font-family:'Playfair Display',serif;
+  font-size:18px; font-weight:700;
+  color:var(--ink); line-height:1.5;
+}
+
+/* Highlight callout */
+.hl {
+  border-left: 3px solid var(--gold);
+  padding: 13px 16px; margin: 14px 0;
+  border-radius: 0 6px 6px 0;
+}
+.hl.gold-hl { background:rgba(139,105,20,.08); }
+.hl.rust-hl { background:rgba(125,52,32,.07); border-left-color:var(--rust); }
+.hl.dark-hl { background:rgba(201,168,76,.08); }
+.hl-label {
+  font-family:'DM Mono',monospace; font-size:9px;
+  letter-spacing:.18em; text-transform:uppercase;
+  margin-bottom:4px;
+}
+.hl-label.gold { color:var(--gold); }
+.hl-label.rust { color:var(--rust); }
+.hl-label.white { color:var(--gold2); }
+.hl-text { font-size:14px; line-height:1.65; }
+.hl-text.dark { color:var(--ink); }
+.hl-text.light { color:var(--paper); }
+
+/* Two-panel split */
+.split { display:grid; grid-template-columns:1fr 1fr; gap:0; margin-top:22px; }
+.split-l { background:var(--forest); border-radius:8px 0 0 8px; padding:26px; }
+.split-r { background:var(--rust); border-radius:0 8px 8px 0; padding:26px; }
+.split-label {
+  font-family:'DM Mono',monospace; font-size:9px;
+  letter-spacing:.2em; color:rgba(255,255,255,.5);
+  text-transform:uppercase; margin-bottom:12px;
+}
+.split-title {
+  font-family:'Playfair Display',serif;
+  font-size:18px; font-weight:700;
+  color:#fff; margin-bottom:14px;
+}
+.split-list { list-style:none; }
+.split-list li {
+  font-size:13.5px; color:rgba(255,255,255,.78);
+  padding: 6px 0; border-bottom:1px solid rgba(255,255,255,.1);
+  line-height:1.5;
+}
+.split-list li:last-child { border:none; }
+@media(max-width:600px){
+  .split{ grid-template-columns:1fr; }
+  .split-l{ border-radius:8px 8px 0 0; }
+  .split-r{ border-radius:0 0 8px 8px; }
+}
+
+/* Table */
+.tbl { width:100%; border-collapse:collapse; margin:16px 0; font-size:13px; }
+.tbl th {
+  background:var(--ink); color:var(--paper);
+  font-family:'DM Mono',monospace; font-size:10px;
+  letter-spacing:.1em; padding:10px 12px;
+  text-align:left; text-transform:uppercase;
+}
+.tbl td {
+  padding:10px 12px;
+  border-bottom:1px solid var(--lite);
+  color:var(--grey);
+}
+.tbl td:first-child { color:var(--ink); font-weight:600; }
+.tbl tr:last-child td { border:none; }
+.tbl tr:nth-child(even) td { background:var(--cream); }
+.tbl.dark-tbl th { background:rgba(255,255,255,.06); color:rgba(244,239,228,.7); }
+.tbl.dark-tbl td { border-bottom-color:rgba(255,255,255,.06); color:rgba(244,239,228,.55); }
+.tbl.dark-tbl td:first-child { color:var(--paper); }
+.tbl.dark-tbl tr:nth-child(even) td { background:rgba(255,255,255,.02); }
+
+/* Chapter menu */
+.ch-menu { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:20px; }
+.ch-item {
+  background:var(--warm); border:1px solid var(--lite);
+  border-radius:6px; padding:11px 14px;
+  display:flex; align-items:center; gap:10px;
+  cursor:pointer; transition:all .18s;
+}
+.ch-item:hover { background:var(--cream); border-color:var(--gold); }
+.ch-num {
+  font-family:'DM Mono',monospace; font-size:10px;
+  color:var(--dim); min-width:30px;
+}
+.ch-text { font-size:13px; color:var(--ink); line-height:1.3; }
+
+/* Number stat */
+.stat-row { display:flex; gap:28px; flex-wrap:wrap; margin:20px 0; }
+.stat { text-align:center; }
+.stat-n {
+  font-family:'Playfair Display',serif;
+  font-size:42px; font-weight:900;
+  display:block; line-height:1;
+}
+.stat-n.gold { color:var(--gold2); }
+.stat-n.rust { color:var(--rust); }
+.stat-l {
+  font-family:'DM Mono',monospace; font-size:9px;
+  letter-spacing:.16em; text-transform:uppercase;
+  color:var(--dim);
+}
+
+/* Big concept word */
+.big-word {
+  font-family:'Playfair Display',serif;
+  font-size:clamp(52px,10vw,100px); font-weight:900;
+  line-height:1; color:var(--paper); opacity:.06;
+  position:absolute; bottom:40px; right:40px;
+  pointer-events:none; user-select:none;
+}
+
+/* slbl */
+.slbl {
+  font-family:'DM Mono',monospace; font-size:9.5px;
+  letter-spacing:.18em; text-transform:uppercase;
+  margin: 20px 0 10px;
+}
+.slbl.dark { color:var(--dim); }
+.slbl.light { color:rgba(255,255,255,.3); }
+
+/* badge */
+.badge {
+  display:inline-block; padding:3px 10px;
+  border-radius:20px; font-size:11px;
+  font-family:'DM Mono',monospace;
+}
+.badge.gold { background:rgba(139,105,20,.15); color:var(--gold); border:1px solid rgba(139,105,20,.3); }
+.badge.rust { background:rgba(125,52,32,.12); color:var(--rust); border:1px solid rgba(125,52,32,.3); }
+.badge.forest { background:rgba(35,61,40,.12); color:var(--forest); border:1px solid rgba(35,61,40,.3); }
+.badge.navy { background:rgba(22,34,64,.12); color:var(--navy); border:1px solid rgba(22,34,64,.3); }
+
+</style>
+</head>
+<body>
+
+<div class="prog"><div class="prog-fill" id="pf"></div></div>
+
+<div class="stage">
+<div id="sc">
+
+<!-- ══════════════════════════════════════════════
+  S-00  COVER
+══════════════════════════════════════════════ -->
+<div class="slide on" id="s0">
+<div class="cover">
+  <div class="cover-pre">The Complete Masterclass · From Zero to Knowledgeable</div>
+  <div class="cover-rule"></div>
+  <div class="cover-h">The <span>Intelligent</span><br>Investor</div>
+  <div class="cover-by">Benjamin Graham · Updated by Jason Zweig<br>Preface by Warren E. Buffett</div>
+  <div class="cover-pills">
+    <div class="pill">20 Chapters</div>
+    <div class="pill">Published 1949</div>
+    <div class="pill">Revised Edition</div>
+    <div class="pill">641 Pages</div>
+    <div class="pill">The Best Investing Book Ever Written</div>
+  </div>
+  <div class="cover-qblock">
+    <div class="cover-qtext">"By far the best book on investing ever written."</div>
+    <div class="cover-qby">— Warren E. Buffett</div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+  S-01  WHO IS GRAHAM?
+══════════════════════════════════════════════ -->
+<div class="slide" id="s1">
+<div class="ls">
+  <div class="eyebrow gold">Before We Begin · Lesson 01</div>
+  <div class="headline dark">Who Was<br><em>Benjamin Graham?</em></div>
+  <div class="rule gold"></div>
+
+  <div class="body dark">Benjamin Graham (1894–1976) is the father of value investing. He taught at Columbia Business School for decades. His most famous student was Warren Buffett — who called Graham the second most influential person in his life after his own father.</div>
+
+  <div class="grid2">
+    <div class="card gold-card">
+      <div class="card-icon">🎓</div>
+      <div class="card-t dark">The Teacher</div>
+      <div class="card-b dark">Taught Warren Buffett, Irving Kahn, and Walter Schloss. His class produced some of the greatest investors in history. He taught that investing is a discipline — not a talent.</div>
+    </div>
+    <div class="card rust-card">
+      <div class="card-icon">📉</div>
+      <div class="card-t dark">The Survivor</div>
+      <div class="card-b dark">Graham personally lost almost everything in the 1929 stock market crash. He wrote this book so that ordinary people would never have to make the same mistakes. Every lesson is earned, not borrowed.</div>
+    </div>
+    <div class="card forest-card">
+      <div class="card-icon">📖</div>
+      <div class="card-t dark">The Book</div>
+      <div class="card-b dark">First published in 1949. Revised in 1959, 1965, and 1972. Updated by Jason Zweig in 2003 with modern commentary after each chapter. Still the most recommended investing book in the world.</div>
+    </div>
+    <div class="card navy-card">
+      <div class="card-icon">🧠</div>
+      <div class="card-t dark">The Philosophy</div>
+      <div class="card-b dark">Graham did not teach people how to get rich quickly. He taught people how to think correctly about money, business, and risk — so they would never become poor through their own mistakes.</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+  S-02  OVERVIEW — TABLE OF CONTENTS
+══════════════════════════════════════════════ -->
+<div class="slide" id="s2">
+<div class="ls">
+  <div class="eyebrow gold">Overview · Lesson 02</div>
+  <div class="headline dark">What This Book<br>Will Teach You</div>
+  <div class="sub dark">Twenty chapters that will permanently change how you think about money</div>
+  <div class="rule gold"></div>
+
+  <div class="body dark">The book is divided into four themes: what investing actually is, how to build a portfolio, how to analyse stocks, and — the most important — the psychology of investing correctly.</div>
+
+  <div class="ch-menu">
+    <div class="ch-item"><span class="ch-num">01</span><span class="ch-text">Investment vs Speculation — the foundation</span></div>
+    <div class="ch-item"><span class="ch-num">02</span><span class="ch-text">The Investor and Inflation</span></div>
+    <div class="ch-item"><span class="ch-num">03–05</span><span class="ch-text">The Defensive Investor</span></div>
+    <div class="ch-item"><span class="ch-num">06–07</span><span class="ch-text">The Enterprising Investor</span></div>
+    <div class="ch-item"><span class="ch-num">08</span><span class="ch-text">★ Mr Market — the most important parable</span></div>
+    <div class="ch-item"><span class="ch-num">09–11</span><span class="ch-text">Portfolio Policy and Fund Investing</span></div>
+    <div class="ch-item"><span class="ch-num">12–15</span><span class="ch-text">Security Analysis and Stock Selection</span></div>
+    <div class="ch-item"><span class="ch-num">16–17</span><span class="ch-text">Convertibles, Warrants and Dividends</span></div>
+    <div class="ch-item"><span class="ch-num">18–19</span><span class="ch-text">Eight Case Studies from Real Companies</span></div>
+    <div class="ch-item"><span class="ch-num">20</span><span class="ch-text">★★ Margin of Safety — the central concept</span></div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+  S-03  CHAPTER 1 — INVESTMENT vs SPECULATION
+══════════════════════════════════════════════ -->
+<div class="slide" id="s3">
+<div class="ls">
+  <div class="eyebrow gold">Chapter 01 · Lesson 03</div>
+  <div class="headline dark">Investment<br>vs <em>Speculation</em></div>
+  <div class="sub dark">The most important distinction in all of finance — and most people get it wrong</div>
+  <div class="rule gold"></div>
+
+  <div class="kc">
+    <div class="kc-label">Graham's Definition — Memorise This</div>
+    <div class="kc-text">"An investment operation is one which, upon thorough analysis, promises safety of principal and an adequate return. Operations not meeting these requirements are speculative."</div>
+  </div>
+
+  <div class="split">
+    <div class="split-l">
+      <div class="split-label">The Investor Thinks</div>
+      <div class="split-title">What is this business worth?</div>
+      <ul class="split-list">
+        <li>Analyses the actual business behind the stock</li>
+        <li>Calculates what the company is worth</li>
+        <li>Only buys below that value with a cushion</li>
+        <li>Holds patiently — months or years</li>
+        <li>Sees price drops as potential opportunities</li>
+        <li>Focuses on safety of capital first</li>
+      </ul>
+    </div>
+    <div class="split-r">
+      <div class="split-label">The Speculator Thinks</div>
+      <div class="split-title">What will others pay tomorrow?</div>
+      <ul class="split-list">
+        <li>Bets on short-term price movements</li>
+        <li>Follows trends, tips and headlines</li>
+        <li>Buys because others are buying</li>
+        <li>Holds for days, hours or minutes</li>
+        <li>Sees price drops as disasters</li>
+        <li>Focuses on profit first — risk ignored</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="hl gold-hl" style="margin-top:16px">
+    <div class="hl-label gold">The Key Insight</div>
+    <div class="hl-text dark">The same stock can be bought as an investment or speculated upon — depending entirely on the buyer's thinking process. A person who analyses the business and pays below its value is an investor. A person who buys the same stock because it went up yesterday is a speculator.</div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+  S-04  CHAPTER 2 — INFLATION
+══════════════════════════════════════════════ -->
+<div class="slide" id="s4">
+<div class="ms">
+  <div class="eyebrow rust">Chapter 02 · Lesson 04</div>
+  <div class="headline dark">The Investor<br>& <em>Inflation</em></div>
+  <div class="sub dark">Why keeping money in cash is the riskiest strategy of all</div>
+  <div class="rule rust"></div>
+
+  <div class="body dark">Most people think keeping cash in a savings account is the safe option. Graham shows this is an illusion. Inflation silently destroys the purchasing power of cash every year. The real question is not "can I lose money in cash?" — it is "how much value am I losing every year by holding cash?"</div>
+
+  <div class="grid3">
+    <div class="card">
+      <div class="card-icon">💸</div>
+      <div class="card-t dark">The Cash Trap</div>
+      <div class="card-b dark">At 3% annual inflation, $10,000 in cash becomes worth only $7,374 in real purchasing power after 10 years. You see $10,000 on paper — but it buys 26% less than it used to.</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">📈</div>
+      <div class="card-t dark">Stocks vs Inflation</div>
+      <div class="card-b dark">Businesses with pricing power can raise their prices when costs rise. Their earnings grow in nominal terms. Shareholders benefit — their ownership stake grows in real value.</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">📉</div>
+      <div class="card-t dark">Bond Danger</div>
+      <div class="card-b dark">A bond pays a fixed interest rate. If inflation rises above that rate, the bondholder loses in real terms. Graham warned against excessive bond exposure for long-term investors.</div>
+    </div>
+  </div>
+
+  <div class="qblock dark-bg">
+    <div class="qtext light">The best defence against inflation is a portfolio of productive assets — businesses that produce real goods or services whose prices rise with the general cost of living.</div>
+    <div class="qattr gold">— Graham's Inflation Principle</div>
+  </div>
+
+  <div class="slbl dark">What This Means Practically</div>
+  <div class="body dark">Graham recommended that the defensive investor hold at least 25% in stocks at all times — never going entirely to cash or bonds even when afraid. The pain of a temporary market drop is always less than the permanent loss of purchasing power from inflation.</div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+  S-05  THE DEFENSIVE INVESTOR
+══════════════════════════════════════════════ -->
+<div class="slide" id="s5">
+<div class="ls">
+  <div class="eyebrow gold">Chapters 03–05 · Lesson 05</div>
+  <div class="headline dark">The <em>Defensive</em><br>Investor</div>
+  <div class="sub dark">For those who want good returns with minimum effort and maximum safety</div>
+  <div class="rule gold"></div>
+
+  <div class="body dark">Graham divides investors into two types. The defensive investor wants to avoid serious mistakes, minimise effort, and achieve satisfactory results. This is actually the correct approach for the vast majority of people.</div>
+
+  <div class="slbl dark">The Defensive Investor's Four Rules</div>
+  <div class="prlist">
+    <div class="pr">
+      <span class="pr-n fade">01</span>
+      <div class="pr-body">
+        <div class="pr-t dark">Adequate diversification — own between 10 and 30 stocks</div>
+        <div class="pr-d dark">No single stock should be large enough to hurt you seriously if it collapses. A broad index fund like an S&P 500 ETF is the ultimate implementation of this rule — owning 500 stocks automatically.</div>
+        <div class="pr-eg gold-eg">Modern equivalent: a low-cost S&P 500 index fund covers this rule completely.</div>
+      </div>
+    </div>
+    <div class="pr">
+      <span class="pr-n fade">02</span>
+      <div class="pr-body">
+        <div class="pr-t dark">Only large, prominent, conservatively financed companies</div>
+        <div class="pr-d dark">Defensive investors should avoid small, speculative, or heavily indebted companies. Stick to businesses that have survived multiple economic cycles and have strong balance sheets.</div>
+        <div class="pr-eg gold-eg">Think: companies with 20+ year operating histories, low debt, consistent profits.</div>
+      </div>
+    </div>
+    <div class="pr">
+      <span class="pr-n fade">03</span>
+      <div class="pr-body">
+        <div class="pr-t dark">Long, uninterrupted record of dividend payments</div>
+        <div class="pr-d dark">Graham considered a consistent dividend record as evidence that the business generates real cash and that management is honest with shareholders. A company that has paid dividends for 20+ years has survived recessions, wars, and crises.</div>
+      </div>
+    </div>
+    <div class="pr">
+      <span class="pr-n fade">04</span>
+      <div class="pr-body">
+        <div class="pr-t dark">Never pay more than 25× recent average earnings</div>
+        <div class="pr-d dark">Even the greatest business becomes a bad investment if you pay too much. Graham's PE limit prevents the defensive investor from making speculative purchases dressed up as quality investments.</div>
+        <div class="pr-eg rust-eg">Paying PE of 60× for a "great company" is speculation — not investment.</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+  S-06  THE ENTERPRISING INVESTOR
+══════════════════════════════════════════════ -->
+<div class="slide" id="s6">
+<div class="ms">
+  <div class="eyebrow rust">Chapters 06–07 · Lesson 06</div>
+  <div class="headline dark">The <em>Enterprising</em><br>Investor</div>
+  <div class="sub dark">More work, more potential reward — but also far more discipline required</div>
+  <div class="rule rust"></div>
+
+  <div class="body dark">The enterprising investor dedicates significant time to research in exchange for above-average returns. Graham warns — most people who think they are enterprising investors are actually just more aggressive speculators who do not know it yet.</div>
+
+  <div class="hl rust-hl">
+    <div class="hl-label rust">Graham's Honest Warning</div>
+    <div class="hl-text dark">The enterprising investor must genuinely outperform the passive index fund investor — otherwise, all the extra effort produces worse results than doing nothing. Most professional fund managers fail this test.</div>
+  </div>
+
+  <div class="split" style="margin-top:20px">
+    <div class="split-l">
+      <div class="split-label">Active Strategies Graham Approves</div>
+      <div class="split-title">✓ What the Enterprising Investor Does</div>
+      <ul class="split-list">
+        <li>Searches for genuinely undervalued individual stocks</li>
+        <li>Reads financial statements — balance sheet, income statement, cash flow</li>
+        <li>Buys stocks trading well below calculated intrinsic value</li>
+        <li>Identifies turnaround situations with strong underlying businesses</li>
+        <li>Holds cash when no attractive opportunity exists</li>
+        <li>Runs a focused portfolio of 8–15 deeply researched stocks</li>
+      </ul>
+    </div>
+    <div class="split-r">
+      <div class="split-label">Strategies Graham Permanently Forbids</div>
+      <div class="split-title">✗ What No Investor Should Do</div>
+      <ul class="split-list">
+        <li>Day trading — buying and selling within hours or days</li>
+        <li>Buying hot new IPOs at launch price</li>
+        <li>Investing based on tips from friends, media, or analysts</li>
+        <li>Buying "growth stocks" at any price regardless of value</li>
+        <li>Using borrowed money (margin) to amplify bets</li>
+        <li>Trying to time the market's direction</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+  S-07  CHAPTER 8 — MR MARKET ★
+══════════════════════════════════════════════ -->
+<div class="slide" id="s7">
+<div class="ds">
+  <div class="eyebrow white">Chapter 08 · The Most Important Lesson · Lesson 07</div>
+  <div class="headline light"><em>Mr Market</em> —<br>The Parable</div>
+  <div class="sub light">One story that will protect your wealth for the rest of your life</div>
+  <div class="rule white"></div>
+
+  <div class="body light">Graham asks you to imagine that you own a share in a private business. Your business partner — Mr Market — shows up at your door every single day. Every day he names a price at which he will buy your share from you, or sell you his share. He is always happy to do either.</div>
+
+  <div class="body light">The problem is that Mr Market is emotionally unstable. Some days he is wildly optimistic and offers an absurdly high price. Other days he is deeply pessimistic and offers a very low price. His price has nothing to do with the actual value of the business — only with his mood that day.</div>
+
+  <div class="grid2" style="margin:20px 0">
+    <div class="card" style="background:rgba(35,61,40,.3);border-color:rgba(35,61,40,.5)">
+      <div class="card-t light">When Mr Market is Depressed</div>
+      <div class="card-b" style="color:rgba(244,239,228,.7)">He names a very low price. He is scared. He sees only danger. If you know the business is healthy and worth more — this is your buying opportunity. His panic is your profit.</div>
+    </div>
+    <div class="card" style="background:rgba(125,52,32,.3);border-color:rgba(125,52,32,.5)">
+      <div class="card-t light">When Mr Market is Euphoric</div>
+      <div class="card-b" style="color:rgba(244,239,228,.7)">He names a very high price. He is excited. He sees only opportunity. If you know the business is worth less than he is offering — sell to him gladly. His greed is your exit.</div>
+    </div>
+  </div>
+
+  <div class="qblock dark-bg" style="border:1px solid rgba(255,255,255,.08)">
+    <div class="qtext light">You are under no obligation to trade with Mr Market just because he shows up. You can ignore him every day until the day he is irrational enough in your favour. That is your entire job as an intelligent investor.</div>
+    <div class="qattr gold">— Benjamin Graham, Chapter 8</div>
+  </div>
+
+  <div class="hl dark-hl" style="margin-top:16px">
+    <div class="hl-label white">The Permanent Lesson</div>
+    <div class="hl-text light">The stock price is Mr Market's daily opinion of what your shares are worth. His opinion changes every minute based on news, emotion, and the mood of crowds. The intrinsic value of the business changes slowly — over months and years based on actual earnings and cash flows. Never confuse the two.</div>
+  </div>
+
+  <div class="big-word">Market</div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+  S-08  PORTFOLIO POLICY
+══════════════════════════════════════════════ -->
+<div class="slide" id="s8">
+<div class="ls">
+  <div class="eyebrow gold">Chapters 09–11 · Lesson 08</div>
+  <div class="headline dark">Portfolio Policy<br>& <em>Dollar Cost Averaging</em></div>
+  <div class="sub dark">How to construct and manage your holdings over time</div>
+  <div class="rule gold"></div>
+
+  <div class="body dark">Graham establishes clear rules for how to build and maintain a portfolio. He also delivers a verdict on professional fund managers that shocked the industry: most of them underperform a simple index fund after fees.</div>
+
+  <div class="slbl dark">Graham's Three Portfolio Principles</div>
+  <div class="prlist">
+    <div class="pr">
+      <span class="pr-n gold">1</span>
+      <div class="pr-body">
+        <div class="pr-t dark">Adjust stock and bond allocation based on valuations</div>
+        <div class="pr-d dark">Graham recommended a 50/50 split as a baseline. Shift toward more stocks (up to 75%) when markets are cheap relative to earnings. Shift toward more bonds (up to 75%) when markets are expensive. This is the opposite of what most investors do — they buy more when markets are high and sell when low.</div>
+        <div class="pr-eg gold-eg">When P/E ratios are high market-wide → hold more cash. When cheap → increase stocks.</div>
+      </div>
+    </div>
+    <div class="pr">
+      <span class="pr-n gold">2</span>
+      <div class="pr-body">
+        <div class="pr-t dark">Dollar-cost averaging — invest a fixed amount regularly</div>
+        <div class="pr-d dark">Invest a fixed dollar amount at regular intervals — monthly, quarterly — regardless of whether the market is up or down. This automatically causes you to buy more shares when prices are low and fewer when high. Over time, your average cost is better than anyone who tries to time the market.</div>
+        <div class="pr-eg gold-eg">Monthly $500 invested for 10 years regardless of market conditions. The method works automatically.</div>
+      </div>
+    </div>
+    <div class="pr">
+      <span class="pr-n gold">3</span>
+      <div class="pr-body">
+        <div class="pr-t dark">Index funds beat most active managers over the long term</div>
+        <div class="pr-d dark">Graham's data showed that after fees, most actively managed funds underperform the simple market index over 10+ years. The reason is fees, trading costs, and the impossibility of consistently being right. A low-cost index fund guarantees you capture the full market return — which beats the majority of professionals.</div>
+        <div class="pr-eg rust-eg">Most fund managers underperform their benchmark after 10 years. The data is overwhelming.</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+  S-09  SECURITY ANALYSIS
+══════════════════════════════════════════════ -->
+<div class="slide" id="s9">
+<div class="ms">
+  <div class="eyebrow rust">Chapters 12–15 · Lesson 09</div>
+  <div class="headline dark">Security Analysis<br>& <em>Stock Selection</em></div>
+  <div class="sub dark">How to read a business — not just its stock price</div>
+  <div class="rule rust"></div>
+
+  <div class="body dark">Graham teaches the fundamentals of evaluating a company's financial health. The key insight: most investors look at a stock's price chart and recent price movement. The intelligent investor reads the financial statements and evaluates the underlying business.</div>
+
+  <div class="slbl dark">Graham's Seven Stock Selection Criteria</div>
+  <table class="tbl">
+    <thead>
+      <tr><th>Criterion</th><th>Graham's Threshold</th><th>What It Tests</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Company Size</td><td>Not a micro-cap or small-cap</td><td>Survival through economic cycles</td></tr>
+      <tr><td>Financial Strength</td><td>Current ratio above 2:1</td><td>Can it pay its short-term debts?</td></tr>
+      <tr><td>Earnings Stability</td><td>No losses in past 10 years</td><td>Is the business consistently profitable?</td></tr>
+      <tr><td>Dividend History</td><td>Uninterrupted payments 20+ years</td><td>Does management return cash to owners?</td></tr>
+      <tr><td>Earnings Growth</td><td>EPS grew by at least 33% over 10 years</td><td>Is the business growing in real terms?</td></tr>
+      <tr><td>Moderate PE Ratio</td><td>No more than 15× recent earnings</td><td>Are you paying a reasonable price?</td></tr>
+      <tr><td>Price to Book</td><td>No more than 1.5× book value</td><td>Are you paying above asset value?</td></tr>
+    </tbody>
+  </table>
+
+  <div class="hl rust-hl">
+    <div class="hl-label rust">Graham's Combined Multiplier Rule</div>
+    <div class="hl-text dark">Graham's shortcut: multiply the PE ratio by the Price-to-Book ratio. The result should not exceed 22.5. This ensures you never pay an excessive premium on both earnings and assets simultaneously — a double safety check.</div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+  S-10  EARNINGS QUALITY
+══════════════════════════════════════════════ -->
+<div class="slide" id="s10">
+<div class="ls">
+  <div class="eyebrow gold">Chapters 14–15 · Lesson 10</div>
+  <div class="headline dark">Earnings Per Share<br>& <em>Earnings Quality</em></div>
+  <div class="sub dark">Not all profits are equal — learning to read numbers honestly</div>
+  <div class="rule gold"></div>
+
+  <div class="body dark">Graham devotes significant attention to how company earnings can be manipulated or misleading. Reported profit is an accounting number — it can differ significantly from the actual cash the business generates. The intelligent investor checks both.</div>
+
+  <div class="grid2">
+    <div class="card gold-card">
+      <div class="card-icon">✓</div>
+      <div class="card-t dark">High-Quality Earnings</div>
+      <div class="card-b dark">Free Cash Flow closely matches reported Net Income. The company converts most of its profit into actual cash. Non-GAAP adjustments are small, consistent, and clearly explained. Accounting is conservative rather than aggressive.</div>
+    </div>
+    <div class="card rust-card">
+      <div class="card-icon">✗</div>
+      <div class="card-t dark">Low-Quality Earnings</div>
+      <div class="card-b dark">Free Cash Flow is far below Net Income. The company is booking profit on paper that is not arriving in cash. Non-GAAP adjustments are large and growing. Management adds back recurring costs as "one-time" items every single year.</div>
+    </div>
+  </div>
+
+  <div class="slbl dark">Graham's Five Earnings Checks</div>
+  <div class="prlist">
+    <div class="pr">
+      <span class="pr-n fade">1</span>
+      <div class="pr-body"><div class="pr-t dark">Compare FCF to Net Income — should be within 10–15% of each other</div></div>
+    </div>
+    <div class="pr">
+      <span class="pr-n fade">2</span>
+      <div class="pr-body"><div class="pr-t dark">Check how revenue is recognised — when earned or when contracted?</div></div>
+    </div>
+    <div class="pr">
+      <span class="pr-n fade">3</span>
+      <div class="pr-body"><div class="pr-t dark">Count non-GAAP "one-time" charges — if recurring every year, they are not one-time</div></div>
+    </div>
+    <div class="pr">
+      <span class="pr-n fade">4</span>
+      <div class="pr-body"><div class="pr-t dark">Check share count trend — is management diluting shareholders or buying back shares?</div></div>
+    </div>
+    <div class="pr">
+      <span class="pr-n fade">5</span>
+      <div class="pr-body"><div class="pr-t dark">Read the footnotes — that is where the problems are always hidden</div></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+  S-11  INTRINSIC VALUE
+══════════════════════════════════════════════ -->
+<div class="slide" id="s11">
+<div class="ds">
+  <div class="eyebrow white">Core Concept · Lesson 11</div>
+  <div class="headline light">Intrinsic <em>Value</em> —<br>What Is a Business Worth?</div>
+  <div class="sub light">The concept that separates all investors from all speculators</div>
+  <div class="rule white"></div>
+
+  <div class="body light">Intrinsic value is the actual worth of a business — calculated from its earnings, assets, growth prospects, and competitive position — independent of what its stock price is today. Graham makes a sharp distinction: the price is what you pay, the value is what you get.</div>
+
+  <div class="grid2" style="margin:20px 0">
+    <div class="card dark-card">
+      <div class="card-icon">🏷️</div>
+      <div class="card-t light">Price</div>
+      <div class="card-b light">What Mr Market offers you today. Changes every minute. Driven by emotion, news, and supply and demand. Completely irrelevant to the actual worth of the business. The speculator focuses here.</div>
+    </div>
+    <div class="card dark-card">
+      <div class="card-icon">⚖️</div>
+      <div class="card-t light">Value</div>
+      <div class="card-b light">What the business is actually worth based on its earnings power and assets. Changes slowly — over months and years based on fundamental business performance. The intelligent investor focuses here.</div>
+    </div>
+  </div>
+
+  <div class="slbl light">How Graham Calculated Intrinsic Value</div>
+  <div class="prlist">
+    <div class="pr dark-pr">
+      <span class="pr-n white">1</span>
+      <div class="pr-body">
+        <div class="pr-t light">Earnings Power — what does the business earn normalised over time?</div>
+        <div class="pr-d light">Use average earnings over 5–10 years rather than a single year. One exceptional year or one terrible year should not drive the valuation. Stability and consistency matter.</div>
+      </div>
+    </div>
+    <div class="pr dark-pr">
+      <span class="pr-n white">2</span>
+      <div class="pr-body">
+        <div class="pr-t light">Apply a reasonable multiplier — Graham used 8.5 to 15× earnings</div>
+        <div class="pr-d light">The multiplier reflects the quality of the earnings — how consistent, how likely to grow, how defensible. Better businesses deserve higher multipliers. But Graham sets a ceiling: never pay more than 25× earnings under any circumstances.</div>
+      </div>
+    </div>
+    <div class="pr dark-pr">
+      <span class="pr-n white">3</span>
+      <div class="pr-body">
+        <div class="pr-t light">Check against asset value — what are the net assets worth?</div>
+        <div class="pr-d light">Book value — the net assets of the business — provides a second check. Graham preferred to buy below book value when possible, as this provided extra protection if the business did poorly.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="big-word">Value</div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+  S-12  CHAPTER 20 — MARGIN OF SAFETY ★★
+══════════════════════════════════════════════ -->
+<div class="slide" id="s12">
+<div class="ls">
+  <div class="eyebrow gold">Chapter 20 · The Most Important Chapter · Lesson 12</div>
+  <div class="headline dark">"Margin of Safety"<br><em>as the Central Concept</em></div>
+  <div class="sub dark">The three words that separate investors from gamblers — forever</div>
+  <div class="rule gold"></div>
+
+  <div class="kc">
+    <div class="kc-label">The Definition — The Entire Book in One Sentence</div>
+    <div class="kc-text">Margin of Safety = the difference between the price you pay and the intrinsic value of what you buy. Always buy below intrinsic value. The gap between what you pay and what it is worth is your protection against being wrong.</div>
+  </div>
+
+  <div class="body dark" style="margin-top:16px">Graham uses the analogy of a civil engineer. When designing a bridge to carry 10,000 tonnes, he builds it to safely carry 30,000 tonnes. The extra 20,000 tonnes is not wasted — it is the margin of safety that protects against calculation errors, unexpected stress, and unforeseen problems. Intelligent investing works exactly the same way.</div>
+
+  <div class="grid3">
+    <div class="card gold-card">
+      <div class="card-t dark">Why You Need It</div>
+      <div class="card-b dark">No analysis is perfectly accurate. Businesses face unexpected challenges. Even the best investor is wrong sometimes. The margin of safety absorbs your errors so a mistake becomes a small loss rather than a disaster.</div>
+    </div>
+    <div class="card forest-card">
+      <div class="card-t dark">How Big Should It Be?</div>
+      <div class="card-b dark">Graham required a minimum 33% margin of safety. Pay no more than 67 cents for every dollar of intrinsic value. The riskier or more uncertain the business, the larger the margin required.</div>
+    </div>
+    <div class="card rust-card">
+      <div class="card-t dark">What Destroys It</div>
+      <div class="card-b dark">Paying a high price for "a great company." Even the finest business provides no margin of safety if you pay 50× earnings for it. Overpaying turns investment into speculation.</div>
+    </div>
+  </div>
+
+  <div class="qblock cream-bg" style="margin-top:16px">
+    <div class="qtext dark">The function of the margin of safety is, in essence, that of rendering unnecessary an accurate estimate of the future. If the margin is large enough, it is sufficient to assume that future earnings will not fall far below those of the past in order for an investor to feel sufficiently protected against the vicissitudes of time.</div>
+    <div class="qattr rust">— Benjamin Graham, Chapter 20</div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+  S-13  THE PSYCHOLOGY CHAPTER
+══════════════════════════════════════════════ -->
+<div class="slide" id="s13">
+<div class="ds">
+  <div class="eyebrow white">Psychology of Investing · Lesson 13</div>
+  <div class="headline light">The Investor's<br><em>Greatest Enemy</em></div>
+  <div class="sub light">Graham's most honest chapter — the problem is us, not the market</div>
+  <div class="rule white"></div>
+
+  <div class="body light">Graham concludes his analysis of every strategy, every formula, and every technique with a humbling observation: the biggest obstacle to investment success is not finding the right stocks. It is managing your own emotions. The investor's chief problem is likely to be himself.</div>
+
+  <div class="slbl light">The Five Emotional Errors Graham Identified</div>
+  <div class="prlist">
+    <div class="pr dark-pr">
+      <span class="pr-n white">1</span>
+      <div class="pr-body">
+        <div class="pr-t light">Speculation disguised as investment</div>
+        <div class="pr-d light">Buying a stock because the price went up recently and feeling clever about it. Selling a stock because the price went down and calling it "risk management." Both are emotion — neither is analysis.</div>
+      </div>
+    </div>
+    <div class="pr dark-pr">
+      <span class="pr-n white">2</span>
+      <div class="pr-body">
+        <div class="pr-t light">Trading too much — action for its own sake</div>
+        <div class="pr-d light">Every trade has a cost. Every unnecessary trade transfers your money to brokers and market makers. Graham found that the most active traders consistently underperformed the least active ones. Doing nothing is often the correct action.</div>
+      </div>
+    </div>
+    <div class="pr dark-pr">
+      <span class="pr-n white">3</span>
+      <div class="pr-body">
+        <div class="pr-t light">Following the crowd at the worst times</div>
+        <div class="pr-d light">Markets reach their highest prices when optimism is maximum — exactly when the future expected returns are lowest. Markets reach their lowest when fear is maximum — when future returns are highest. The crowd consistently does the opposite of what is rational.</div>
+      </div>
+    </div>
+    <div class="pr dark-pr">
+      <span class="pr-n white">4</span>
+      <div class="pr-body">
+        <div class="pr-t light">Abandoning good strategy during difficulty</div>
+        <div class="pr-d light">Every sound strategy goes through periods of underperformance. The investor who abandons their strategy at the first sign of difficulty will never succeed — because they will always sell at the bottom and buy at the top of each cycle.</div>
+      </div>
+    </div>
+    <div class="pr dark-pr">
+      <span class="pr-n white">5</span>
+      <div class="pr-body">
+        <div class="pr-t light">Confusing luck with skill</div>
+        <div class="pr-d light">In a bull market, almost any stock purchase profits. This tricks investors into believing they have superior skill. When the market turns, they discover they were just positioned correctly for that cycle — not analytically superior. Humility is protective.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="big-word">Mind</div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+  S-14  THE FIVE PERMANENT RULES
+══════════════════════════════════════════════ -->
+<div class="slide" id="s14">
+<div class="ms">
+  <div class="eyebrow rust">Synthesis · Lesson 14</div>
+  <div class="headline dark">Graham's Five<br><em>Permanent Rules</em></div>
+  <div class="sub dark">Everything in 641 pages distilled to what you must never forget</div>
+  <div class="rule rust"></div>
+
+  <div class="prlist">
+    <div class="pr">
+      <span class="pr-n fade">Ⅰ</span>
+      <div class="pr-body">
+        <div class="pr-t dark">A stock is ownership of a real business — always think like an owner</div>
+        <div class="pr-d dark">The moment you forget that a stock certificate represents a fractional ownership of a real company with real employees, real products, and real earnings — you become a speculator. Ask always: "Would I buy the entire business at this price?"</div>
+      </div>
+    </div>
+    <div class="pr">
+      <span class="pr-n fade">Ⅱ</span>
+      <div class="pr-body">
+        <div class="pr-t dark">The market is your servant — never your guide</div>
+        <div class="pr-d dark">Mr Market's daily price quotations are an offer — not a command. You are never obligated to sell because the price fell or buy because it rose. Use the market's volatility to your advantage rather than being ruled by it.</div>
+      </div>
+    </div>
+    <div class="pr">
+      <span class="pr-n fade">Ⅲ</span>
+      <div class="pr-body">
+        <div class="pr-t dark">Always demand a margin of safety — never overpay</div>
+        <div class="pr-d dark">The three words that summarise the entire book. No matter how great the business, pay below its intrinsic value. The gap between price paid and value received is your cushion against errors, bad luck, and unforeseen events.</div>
+        <div class="pr-eg rust-eg">Graham: Pay no more than 67 cents for every dollar of intrinsic value.</div>
+      </div>
+    </div>
+    <div class="pr">
+      <span class="pr-n fade">Ⅳ</span>
+      <div class="pr-body">
+        <div class="pr-t dark">Be fearful when others are greedy — greedy when others are fearful</div>
+        <div class="pr-d dark">The best buying opportunities arise exactly when fear is highest and the crowd is selling. The most dangerous times to buy are when optimism is universal and prices reflect perfection. This is counter-intuitive — and that is precisely why so few people do it.</div>
+      </div>
+    </div>
+    <div class="pr">
+      <span class="pr-n fade">Ⅴ</span>
+      <div class="pr-body">
+        <div class="pr-t dark">Patience and discipline are the only edges available to ordinary investors</div>
+        <div class="pr-d dark">You cannot out-analyse Wall Street. You cannot trade faster than computers. But you can be more patient. You can hold when they panic. You can wait when they chase. Time is the ordinary investor's only sustainable competitive advantage.</div>
+        <div class="pr-eg rust-eg">The stock market transfers wealth from the impatient to the patient — every single time.</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+  S-15  FINAL SLIDE — SUMMARY
+══════════════════════════════════════════════ -->
+<div class="slide" id="s15">
+<div class="ds">
+  <div class="eyebrow white">Final Summary · Lesson 15</div>
+  <div class="headline light">What You Now<br><em>Know</em></div>
+  <div class="sub light">From zero to a complete understanding of the most important investing book ever written</div>
+  <div class="rule white"></div>
+
+  <div class="grid3" style="margin-bottom:20px">
+    <div class="card dark-card" style="border-top:3px solid var(--gold2)">
+      <div class="card-t light">Investment</div>
+      <div class="card-b light" style="font-size:12.5px">Thorough analysis. Safety of principal. Adequate return. Everything else is speculation.</div>
+    </div>
+    <div class="card dark-card" style="border-top:3px solid var(--rust)">
+      <div class="card-t light">Mr Market</div>
+      <div class="card-b light" style="font-size:12.5px">His daily moods are irrelevant. His panics are your opportunities. His euphoria is your exit signal.</div>
+    </div>
+    <div class="card dark-card" style="border-top:3px solid var(--forest)">
+      <div class="card-t light">Margin of Safety</div>
+      <div class="card-b light" style="font-size:12.5px">Always buy below intrinsic value. The gap protects you from errors. Never compromise it for excitement.</div>
+    </div>
+    <div class="card dark-card" style="border-top:3px solid var(--navy)">
+      <div class="card-t light">Inflation</div>
+      <div class="card-b light" style="font-size:12.5px">Cash loses real value every year. Productive assets — businesses with pricing power — protect against it.</div>
+    </div>
+    <div class="card dark-card" style="border-top:3px solid var(--gold)">
+      <div class="card-t light">Dollar-Cost Average</div>
+      <div class="card-b light" style="font-size:12.5px">Invest fixed amounts regularly. Never try to time the market. Let the method work automatically over time.</div>
+    </div>
+    <div class="card dark-card" style="border-top:3px solid var(--dim)">
+      <div class="card-t light">Psychology</div>
+      <div class="card-b light" style="font-size:12.5px">Your greatest enemy is yourself. Build rules that override your emotions. Follow the framework — not your feelings.</div>
+    </div>
+  </div>
+
+  <div class="qblock" style="background:linear-gradient(135deg,var(--gold),#7A5A10);margin-bottom:16px">
+    <div class="qtext" style="color:var(--ink)">"The stock market is filled with individuals who know the price of everything but the value of nothing."</div>
+    <div class="qattr" style="color:rgba(12,11,9,.55)">— Benjamin Graham · The Intelligent Investor</div>
+  </div>
+
+  <div class="grid2">
+    <div style="background:rgba(255,255,255,.04);border-radius:8px;padding:18px;border:1px solid rgba(255,255,255,.08)">
+      <div class="slbl light" style="margin-top:0">Read Next</div>
+      <div style="font-size:13.5px;color:rgba(244,239,228,.65);line-height:1.7">
+        <strong style="color:var(--paper)">Chapter 8</strong> — Re-read it slowly. The Mr Market parable is the most important single page in the book.<br><br>
+        <strong style="color:var(--paper)">Chapter 20</strong> — Read it every time you are about to make an investment decision. The margin of safety concept applies to every purchase.
+      </div>
+    </div>
+    <div style="background:rgba(255,255,255,.04);border-radius:8px;padding:18px;border:1px solid rgba(255,255,255,.08)">
+      <div class="slbl light" style="margin-top:0">Read After This Book</div>
+      <div style="font-size:13.5px;color:rgba(244,239,228,.65);line-height:1.7">
+        <strong style="color:var(--paper)">The Psychology of Money</strong> — Morgan Housel. Applies Graham's psychology lessons to modern life.<br><br>
+        <strong style="color:var(--paper)">One Up on Wall Street</strong> — Peter Lynch. The most readable and practical companion to this book.
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:16px;text-align:center;font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,.18)">
+    The Intelligent Investor · Benjamin Graham · Masterclass Slides · 15 Lessons · Zero to Knowledgeable
+  </div>
+</div>
+</div>
+
+</div><!-- sc -->
+</div><!-- stage -->
+
+<!-- ── CONTROLS ── -->
+<div class="bar">
+  <button class="btn" onclick="prev()">← Back</button>
+  <div class="dots" id="dots"></div>
+  <span class="ctr" id="ctr">1 / 16</span>
+  <button class="btn go" onclick="next()">Next →</button>
+</div>
+
+<script>
+const N = 16;
+let cur = 0;
+
+const labels = [
+  "Cover","Who is Graham","Overview","Ch.1 Investment vs Speculation",
+  "Ch.2 Inflation","Ch.3-5 Defensive Investor","Ch.6-7 Enterprising Investor",
+  "Ch.8 ★ Mr Market","Ch.9-11 Portfolio","Ch.12-15 Security Analysis",
+  "Ch.14-15 Earnings Quality","Intrinsic Value","Ch.20 ★★ Margin of Safety",
+  "Psychology","Five Permanent Rules","Final Summary"
+];
+
+const dotsEl = document.getElementById('dots');
+labels.forEach((_,i)=>{
+  const d = document.createElement('div');
+  d.className = 'dot'+(i===0?' on':'');
+  d.title = labels[i];
+  d.onclick = ()=>go(i);
+  dotsEl.appendChild(d);
+});
+
+function go(n){
+  document.getElementById('s'+cur).classList.remove('on');
+  document.querySelectorAll('.dot')[cur].classList.remove('on');
+  document.querySelectorAll('.dot')[cur].classList.add('done');
+  cur = Math.max(0,Math.min(N-1,n));
+  document.getElementById('s'+cur).classList.add('on');
+  const ds = document.querySelectorAll('.dot');
+  ds[cur].classList.add('on');
+  ds[cur].classList.remove('done');
+  document.getElementById('ctr').textContent=(cur+1)+' / '+N;
+  document.getElementById('pf').style.width=((cur+1)/N*100)+'%';
+  window.scrollTo({top:0,behavior:'smooth'});
+  // scroll dot into view
+  ds[cur].scrollIntoView({inline:'center',behavior:'smooth'});
+}
+function next(){ if(cur<N-1) go(cur+1); }
+function prev(){ if(cur>0) go(cur-1); }
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();next();}
+  if(e.key==='ArrowLeft'){e.preventDefault();prev();}
+});
+</script>
+</body>
+</html>
